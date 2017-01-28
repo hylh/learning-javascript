@@ -1,3 +1,8 @@
+/*global PIXI*/
+/*global keyboard*/
+/*global contain*/
+/*global hitTestRectangle*/
+
 //Aliases
 var Container = PIXI.Container,
     autoDetectRenderer = PIXI.autoDetectRenderer,
@@ -11,7 +16,7 @@ var Container = PIXI.Container,
 
 var stage = new Container(),
     renderer = autoDetectRenderer(
-    400, 400, 
+    600, 600, 
     {transparent: false, antialias: false, resolution: 1}
 );
 
@@ -25,9 +30,9 @@ loader
     ])
     .load(setup);
 
-var cat, bunny, rocket, face, tiger;
-var message;
-var state;
+let cat, bunny, rocket, face, tiger;
+let message;
+let state;
 
 function setup() {
     cat = new Sprite(resources["images/cat.png"].texture);
@@ -131,7 +136,7 @@ function setup() {
         if(!down.isDown && bunny.vx === 0) {
             bunny.vy = 0;
         }
-    }
+    };
 
     right.press = function() {
         bunny.vx = 5;
@@ -171,6 +176,7 @@ function play() {
     cat.vy = 1;
     cat.x += cat.vx;
     cat.y += cat.vy;
+
     bunny.x += bunny.vx;
     bunny.y += bunny.vy;
 
