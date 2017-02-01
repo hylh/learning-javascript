@@ -1,7 +1,7 @@
 function hitTestRectangle(r1, r2) {
 
   //Define the variables we'll need to calculate
-  var hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
+  let hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
 
   //hit will determine whether there's a collision
   hit = false;
@@ -50,7 +50,7 @@ function hitTestRectangle(r1, r2) {
 };
 
 function contain(sprite, container) {
-  var collision = undefined;
+  let collision = undefined;
 
   //Left
   if (sprite.x < container.x) {

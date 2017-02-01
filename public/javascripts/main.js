@@ -4,7 +4,7 @@
 /*global hitTestRectangle*/
 
 //Aliases
-var Container = PIXI.Container,
+const Container = PIXI.Container,
     autoDetectRenderer = PIXI.autoDetectRenderer,
     loader = PIXI.loader,
     resources = PIXI.loader.resources,
@@ -14,7 +14,7 @@ var Container = PIXI.Container,
     Graphics = PIXI.Graphics,
     Text = PIXI.Text;
 
-var stage = new Container(),
+const stage = new Container(),
     renderer = autoDetectRenderer(
     600, 600, 
     {transparent: false, antialias: false, resolution: 1}
@@ -34,28 +34,66 @@ let cat, bunny, rocket, face, tiger;
 let message;
 let state;
 
-function setup() {
-    cat = new Sprite(resources["images/cat.png"].texture);
-    stage.addChild(cat);
-    cat.vx = 0;
-    cat.vy = 0;
+class Npc {
+    constructor(sprite, x, y) {
+        this.sprite = sprite;
+        this.x = x;
+        this.y = y;
+        this.rotation = 0;
+        this.sprite.vx = 0;
+        this.sprite.vy = 0;
 
-    bunny = new Sprite(resources["images/bunny.png"].texture);
-    bunny.position.set(200,200);
-    bunny.scale.set(1.5, 1.5);
-    bunny.vx = 0;
-    bunny.vy = 0;
+        this.sprite.x = this.x;
+        this.sprite.y = this.y;
+    }
+
+    setVelocity(vx, vy){
+        this.sprite.vx = vx;
+        this.sprite.vy = vy;
+    }
+
+    setRotation(radians){
+        this.rotation = radians;
+    }
+
+    animate(){
+        this.sprite.x += this.sprite.vx;
+        this.sprite.y += this.sprite.vy;
+
+        this.sprite.rotation += this.rotation;
+    }
+}
+
+function setup() {
+    cat_sprite = new Sprite(resources["images/cat.png"].texture);
+    cat = new Npc(
+        cat_sprite,
+        0,
+        0
+    );
+    cat.setVelocity(2,1);
+
+    stage.addChild(cat.sprite);
+
+    bunny_sprite = new Sprite(resources["images/bunny.png"].texture);
+    bunny = new Npc(
+        bunny_sprite,
+        200,
+        200
+    );
+    bunny.sprite.scale.set(1.5, 1.5);
     //Set the anchor of the sprite, from 0 to 1
     //This will set it to the center of the sprite
-    bunny.anchor.set(0.5, 0.5);
-    bunny.rotation = 0.5;
-    stage.addChild(bunny);
+    bunny.sprite.anchor.set(0.5, 0.5);
+    //bunny.rotation = 0.5;
+    bunny.setRotation(0.01);
+    stage.addChild(bunny.sprite);
 
 
-    var mySpriteSheetImage = PIXI.BaseTexture.fromImage("images/tileset.png");
-    var rocketTexture = new PIXI.Texture(mySpriteSheetImage, new Rectangle(192,128,64,64));
-    var faceTexture = new PIXI.Texture(mySpriteSheetImage, new Rectangle(192, 64, 64, 64));
-    var tigerTexture = new PIXI.Texture(mySpriteSheetImage, new Rectangle(0,64,64,64));
+    let mySpriteSheetImage = PIXI.BaseTexture.fromImage("images/tileset.png");
+    let rocketTexture = new PIXI.Texture(mySpriteSheetImage, new Rectangle(192,128,64,64));
+    let faceTexture = new PIXI.Texture(mySpriteSheetImage, new Rectangle(192, 64, 64, 64));
+    let tigerTexture = new PIXI.Texture(mySpriteSheetImage, new Rectangle(0,64,64,64));
 
     rocket = new Sprite(rocketTexture);
     rocket.position.set(32,132);
@@ -66,7 +104,7 @@ function setup() {
     tiger = new Sprite(tigerTexture);
     tiger.position.set(0,300);
 
-    var animals = new Container();
+    let animals = new Container();
     animals.addChild(rocket);
     animals.addChild(face);
     animals.addChild(tiger);
@@ -83,7 +121,7 @@ function setup() {
     //tiger.getGlobalPosition().x
     //tiger.getGlobalPosition().y
 
-    var circle = new Graphics();
+    let circle = new Graphics();
     circle.beginFill(0x9966FF);
     circle.drawCircle(0,0,32);
     circle.endFill();
@@ -91,7 +129,7 @@ function setup() {
     circle.y = 130;
     stage.addChild(circle);
 
-    var line = new Graphics();
+    let line = new Graphics();
     line.lineStyle(4, 0xFFFFFF, 1);
     line.moveTo(0,0);
     line.lineTo(80,50);
@@ -112,49 +150,49 @@ function setup() {
     message.text = "Hello Change!";
 
     //Keyboard
-    var left = keyboard(37),
+    const left = keyboard(37),
         up = keyboard(38),
         right = keyboard(39),
         down = keyboard(40);
 
     left.press = function() {
-        bunny.vx = -5;
-        bunny.vy = 0;
+        bunny.sprite.vx = -5;
+        bunny.sprite.vy = 0;
     };
 
     left.release = function() {
-        if(!right.isDown && bunny.vy === 0){
-            bunny.vx = 0;
+        if(!right.isDown && bunny.sprite.vy === 0){
+            bunny.sprite.vx = 0;
         }
     };
 
     up.press = function() {
-        bunny.vx = 0;
-        bunny.vy = -5;
+        bunny.sprite.vx = 0;
+        bunny.sprite.vy = -5;
     };
     up.release = function(){
-        if(!down.isDown && bunny.vx === 0) {
-            bunny.vy = 0;
+        if(!down.isDown && bunny.sprite.vx === 0) {
+            bunny.sprite.vy = 0;
         }
     };
 
     right.press = function() {
-        bunny.vx = 5;
-        bunny.vy = 0;
+        bunny.sprite.vx = 5;
+        bunny.sprite.vy = 0;
     };
     right.release = function() {
-        if (!left.isDown && bunny.vy === 0) {
-            bunny.vx = 0;
+        if (!left.isDown && bunny.sprite.vy === 0) {
+            bunny.sprite.vx = 0;
         }
     };
 
     down.press = function() {
-        bunny.vy = 5;
-        bunny.vx = 0;
+        bunny.sprite.vy = 5;
+        bunny.sprite.vx = 0;
     };
     down.release = function() {
-        if (!up.isDown && bunny.vx === 0) {
-            bunny.vy = 0;
+        if (!up.isDown && bunny.sprite.vx === 0) {
+            bunny.sprite.vy = 0;
         }
     };
 
@@ -172,17 +210,12 @@ function gameLoop() {
 
 function play() {
     //Update the cat's velocity
-    cat.vx = 2;
-    cat.vy = 1;
-    cat.x += cat.vx;
-    cat.y += cat.vy;
+    cat.animate();
+    bunny.animate();
 
-    bunny.x += bunny.vx;
-    bunny.y += bunny.vy;
+    contain(bunny.sprite, {x: 0, y: 0, width: renderer.width, height: renderer.height});
 
-    contain(bunny, {x: 0, y: 0, width: renderer.width, height: renderer.height});
-
-    if(hitTestRectangle(bunny, tiger)){
+    if(hitTestRectangle(bunny.sprite, tiger)){
         //If collison
         message.text = "hit!";
     } else {

@@ -1,5 +1,5 @@
 function keyboard(keyCode) {
-    var key = {};
+    let key = {};
     key.code = keyCode;
     key.isDown = false;
     key.isUp = true;
