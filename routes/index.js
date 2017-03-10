@@ -23,7 +23,8 @@ router.post('/measure', function(req, res){
   console.log("Got a POST request for /measure");
   var id = req.body.device;
   var message = req.body.string_value;
-  res.send("id: " + id + " message:" + message);
+  console.log("id: ", id)
+  console.log("message: ", message)
 });
 
 module.exports = router;
