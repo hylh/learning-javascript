@@ -1,8 +1,11 @@
-doctype html
-html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    script(src="javascripts/pixi.js")
-  body
-    block content
+extends ../node_modules/jade-bootstrap/_bootstrap
+append styles
+	// Custom styles for this template
+	link(href='/stylesheets/style.css', rel='stylesheet')
+block body
+	+navbar("Bunny hop","dropdown-menu","inverse")
+		+nav_item("/","active") Home
+		+nav_item("map") Map
+		+nav_item("game") Game
+	
+
