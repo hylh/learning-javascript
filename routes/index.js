@@ -18,4 +18,12 @@ router.get('/map', function(req, res) {
   res.render('map'); 
 });
 
+/* POST measurements. */
+router.post('/measure', function(req, res){
+  console.log("Got a POST request for /measure");
+  var id = req.body.device;
+  var message = req.body.string_value;
+  res.send("id: " + id + " message:" + message);
+});
+
 module.exports = router;
