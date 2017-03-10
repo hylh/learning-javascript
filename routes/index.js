@@ -18,12 +18,18 @@ router.get('/map', function(req, res) {
   res.render('map'); 
 });
 
+router.get('/iot', function(req, res, next) {
+  console.log("Got a GET request for /iot");
+  const array = { x: 2, y: 2};
+
+  res.render('iot', {foo: array});
+});
+
 /* POST measurements. */
 router.post('/measure', function(req, res){
   console.log("Got a POST request for /measure");
-  var id = req.body.device;
   var message = req.body.string_value;
-  console.log("id: ", id)
+  /* string_value is the message */
   console.log("message: ", message)
 });
 
