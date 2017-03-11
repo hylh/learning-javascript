@@ -3,6 +3,8 @@ Game creation with JS and PIXI
 
 Run http-server with "npm start"
 
+## Commands
+
 Push to Heroku
 git push heroku master
 
@@ -20,3 +22,7 @@ heroku logs --tail
 
 Open Heroku live site
 heroku open
+
+Open interactive Postgres shell
+heroku pg:psql
+
