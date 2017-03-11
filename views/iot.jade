@@ -1,0 +1,11 @@
+extends layout
+
+append body
+  h1= title
+  p Welcome to IoT
+  div(id="chartContainer", style="height: 300px; width: 100%;")
+  script(src="http://canvasjs.com/assets/script/canvasjs.min.js")
+  script(type="text/javascript").
+    var local_data = !{JSON.stringify(foo)}
+  script(src="javascripts/iot/main.js")
+  button(onclick="Update()") Update
