@@ -1,4 +1,5 @@
 var express = require('express');
+var model = require('./model')
 var router = express.Router();
 
 /* GET home page. */
@@ -18,6 +19,7 @@ router.get('/map', function(req, res) {
   res.render('map'); 
 });
 
+/* GET iot page. */
 router.get('/iot', function(req, res, next) {
   console.log("Got a GET request for /iot");
   const array = { x: 2, y: 2};
@@ -32,5 +34,10 @@ router.post('/measure', function(req, res){
   /* string_value is the message */
   console.log("message: ", message)
 });
+
+/* DATABASE FUNCTIONS */
+router.get('/model', model.findAll);
+router.get('model:id', model.findById);
+router.post('model', model.addItem);
 
 module.exports = router;

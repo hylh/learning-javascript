@@ -5,6 +5,7 @@ Run http-server with "npm start"
 
 ## Commands
 
+### Heroku
 Push to Heroku
 git push heroku master
 
@@ -23,6 +24,15 @@ heroku logs --tail
 Open Heroku live site
 heroku open
 
-Open interactive Postgres shell
+### Postgres
+Open interactive shell on heroku
 heroku pg:psql
 
+Open interactive local shell
+psql 'database name'
+
+List all databases 
+\l
+
+Quit interactive shell
+\q

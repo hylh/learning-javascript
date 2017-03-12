@@ -46,29 +46,4 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-var pg = require('pg');
-
-pg.defaults.ssl = true;
-var config = {
-  user: 'hylh', //env var: PGUSER
-  database: 'hero', //env var: PGDATABASE
-  //password: 'secret', //env var: PGPASSWORD
-  host: 'localhost', // Server hosting the postgres database
-  port: 5432, //env var: PGPORT
-  max: 10, // max number of clients in the pool
-  idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
-};
-var connString = process.env.DATABASE_URL || config
-
-pg.connect(connString, function(err, client) {
-  if (err) throw err;
-  console.log('Connected to postgres! Getting schemas...');
-
-  client
-    .query('SELECT table_schema,table_name FROM information_schema.tables;')
-    .on('row', function(row) {
-      console.log(JSON.stringify(row));
-    });
-});
-
 module.exports = app;

@@ -25,20 +25,10 @@ window.onload = function () {
 
 
     // Date is (year, month, date, hours, minutes)
+    // x: new Data(2017, 03, 01, 15, 10)
     dataStyle2.dataPoints = [
         local_data
     ];
-
-
-/*  
-    const array = [
-    { x: new Date(2017, 03, 01, 15, 15), y: 5},
-    { x: new Date(2017, 03, 02, 15, 15), y: 10},
-    { x: new Date(2017, 03, 03, 15, 15), y: 15},
-    { x: new Date(2017, 03, 04, 15, 15), y: 20},
-    { x: new Date(2017, 03, 05, 15, 15), y: 25}
-    ];
-*/
 
     dataStyle.dataPoints = [
         { x: 1, y: 10},
