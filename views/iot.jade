@@ -2,12 +2,20 @@ extends layout
 
 append body
   h1= title
-  p Welcome to IoT
+  h1 Welcome to IoT
 
 
-  //- div(id="chartContainer", style="height: 300px; width: 100%;")
-  //- script(src="http://canvasjs.com/assets/script/canvasjs.min.js")
+  script(src="http://canvasjs.com/assets/script/canvasjs.min.js")
+  script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js")
+  p "Load" will get information from the server
+    button#get LOAD
+  p "View" will put that information into an array
+    button#view View
+  p "Update" will update the chart with the information from the database
+    button(onclick="Update()") Update
+  div(id="chartContainer", style="height: 300px; width: 100%;")
+  script(src="javascripts/iot/main.js")
+
+  //- this is to assign variable from the router
   //- script(type="text/javascript").
   //-   var local_data = !{JSON.stringify(foo)}
-  script(src="javascripts/iot/main.js")
-  //- button(onclick="Update()") Update

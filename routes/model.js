@@ -47,7 +47,7 @@ exports.findAll = function(req, res) {
             };
             console.log('Printing result');
             console.log(result);
-            res.send(result);
+            res.send(result.rows);
         });
     });
 };
