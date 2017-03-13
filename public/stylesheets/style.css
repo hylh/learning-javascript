@@ -11,3 +11,11 @@ body {
   text-align: center;
   background-color: indianred;
 }
+
+.page-header {
+  text-align: center;
+}
+
+.buttonRow {
+  text-align: center;
+}

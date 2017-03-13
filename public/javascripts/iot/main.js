@@ -1,7 +1,48 @@
 var nfo;
 var currentData = [];
+// Example JSON data returned from your database
+let data = {
+    rows: [
+        {
+            firstName: 'Jill',
+            lastName:  'Smith',
+            age:       '22'
+        },
+        {
+            firstName: 'Fred',
+            lastName:  'Blogs',
+            age:       '34'
+        },
+        {
+            firstName: 'Brian',
+            lastName:  'Jones',
+            age:       '42'
+        }
+    ]
+};
+
+let htmlTableRows = ``;
+let htmlTableTitle = "<thead><tr><th>Name</th><th>Last</th><th>Age</th></tr></thead>";
+
+// Iterate of the rows in the data, use an ES6 "arrow function" to operate on each one
+data.rows.forEach((row) => {
+    // Use ES6 string template to create HTML table rows
+    htmlTableRows += `<tr>
+        <td>${row.firstName}</td>
+        <td>${row.lastName}</td>
+        <td>${row.age}</td>
+    </tr>`;
+});
+
+// HTML for a table
+var htmlTable = `<table class="table table-hover" style="width:100%">${htmlTableTitle}${htmlTableRows}</table>`;
+
+console.log(htmlTable);
 
 $(document).ready(function(){
+    var $t = $('#tableContainer');
+    $t.append(htmlTable);
+    
     $('#get').click(function(event){
         $.get('/model', function(data){
             nfo = data;
@@ -19,9 +60,14 @@ $(document).ready(function(){
 });
 
 
+
+
 var chart = new CanvasJS.Chart("chartContainer");
 
 window.onload = function () {
+    //this gets the initial data from the router
+    //let dates = local_data;
+    //console.log(local_data);
     chart.options.title = {text: "Temperatures"};
 
     var dataStyle = {
@@ -59,6 +105,7 @@ window.onload = function () {
 }
 
 var Update = function () {
+    //Use jquery .replaceWith()
     chart.options.title.fontColor = "red";
     chart.options.data[0].dataPoints = currentData;
     chart.render();

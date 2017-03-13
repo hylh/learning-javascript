@@ -3,10 +3,9 @@ append styles
 	// Custom styles for this template
 	link(href='/stylesheets/style.css', rel='stylesheet')
 block body
-	+navbar("Bunny hop","dropdown-menu","inverse")
-		+nav_item("/","active") Home
-		+nav_item("map") Map
-		+nav_item("game") Game
-		+nav_item("iot") IoT
+	+navbar("IoT","dropdown-menu","inverse")
+		+nav_item("/") Home
+		+nav_item("map") Location
+		+nav_item("iot") Temperature
 	
 

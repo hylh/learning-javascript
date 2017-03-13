@@ -2,12 +2,12 @@ extends layout
 
 append body
   h1= title
-  p Welcome to Google Maps API
-  button(
-    type='button'
-    onclick="newPositionOne()"
-  ) Update
-  p This map should focus on Tromsø
-  div#map(style="width:400px;height:400px")
+  .page-header: h1 This shows the location of the device
+  div#map(style="width:600px;height:400px")
+  .row
+    button.btn.btn-lg.btn-primary(
+      type='button'
+      onclick="newPositionOne()"
+    ) Update
   script(src="javascripts/map/main.js")
   script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmY343-y1IirBm2CQtRdk9q04stiSMUG8&callback=initMap")

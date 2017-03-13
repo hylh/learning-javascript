@@ -4,13 +4,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', {title: 'Bunny hop'});
-});
-
-/* GET game page. */
-router.get('/game', function(req, res) {
-  console.log("Got a GET request for /game");
-  res.render('game'); 
+  res.render('index', {title: 'IoT'});
 });
 
 /* GET map page. */
@@ -37,7 +31,7 @@ router.post('/measure', function(req, res){
 
 /* DATABASE FUNCTIONS */
 router.get('/model', model.findAll);
-router.get('model:id', model.findById);
-router.post('model', model.addItem);
+router.get('/model/:id', model.findById);
+router.post('/model', model.addItem);
 
 module.exports = router;

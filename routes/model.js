@@ -18,15 +18,12 @@ exports.findById = function(req, res) {
             return console.error('error fetching client from pool', err);
         };
         var id = req.params.id;
-        console.log('Retrieving: ' + id);
-        //Create something like "select id from somewhere"
         client
             .query('SELECT * FROM days WHERE id = $1', [id], function(err, result){
                 done();
                 if(err){
                     return console.error('error running query', err);
                 };
-                console.log('Printing result');
                 console.log(result.rows[0]);
                 res.send(result);
         });
@@ -45,8 +42,8 @@ exports.findAll = function(req, res) {
             if(err){
                 return console.error('error running query', err);
             };
-            console.log('Printing result');
-            console.log(result);
+            console.log('Sending result');
+            //console.log(result);
             res.send(result.rows);
         });
     });
@@ -57,16 +54,13 @@ exports.addItem = function(req, res) {
         if (err) {
             return console.error('error fetching client from pool', err);
         };
-        //This is tutorial code
-        //var item = req.body;
-        //I had this
         var month = req.body.month;
         var day = req.body.day;
-        var temperatur = req.body.temperatur;
-        console.log('Adding item: ' + item);
+        var temperature = req.body.temperature;
+        console.log('Adding month: ' + month + " Day: " + day + " Temp: " + temperature);
         //Create something like "pg insert ?"
         client
-            .query('INSERT INTO days VALUES($1, $2, $3) returning id', [month, day, temperatur], function(err, result){
+            .query('INSERT INTO days(month_id, day, temperature) VALUES($1, $2, $3) returning id', [month, day, temperature], function(err, result){
                 done();
                 if(err){
                     return console.error('error adding item', err);
@@ -77,34 +71,3 @@ exports.addItem = function(req, res) {
         });
     });
 }
-
-/*--------------------------------------------------------------------------------------------------------------------*/
-// Populate database with sample data -- Only used once: the first time the application is started.
-// You'd typically not find this code in a real-life app, since the database would already exist.
-var populateDB = function() {
-
-    var wines = [
-    {
-        name: "CHATEAU DE SAINT COSME",
-        year: "2009",
-        grapes: "Grenache / Syrah",
-        country: "France",
-        region: "Southern Rhone",
-        description: "The aromas of fruit and spice...",
-        picture: "saint_cosme.jpg"
-    },
-    {
-        name: "LAN RIOJA CRIANZA",
-        year: "2006",
-        grapes: "Tempranillo",
-        country: "Spain",
-        region: "Rioja",
-        description: "A resurgence of interest in boutique vineyards...",
-        picture: "lan_rioja.jpg"
-    }];
-
-    db.collection('wines', function(err, collection) {
-        collection.insert(wines, {safe:true}, function(err, result) {});
-    });
-
-};
