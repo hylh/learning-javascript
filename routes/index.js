@@ -31,7 +31,8 @@ router.post('/measure', function(req, res){
 
 /* DATABASE FUNCTIONS */
 router.get('/model', model.findAll);
-router.get('/model/:id', model.findById);
+router.get('/model/day/:id', model.findById);
+router.get('/model/month/:id', model.findMonthById);
 router.post('/model', model.addItem);
 
 module.exports = router;

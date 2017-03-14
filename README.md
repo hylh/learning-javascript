@@ -36,3 +36,8 @@ List all databases
 
 Quit interactive shell
 \q
+
+Run migrations
+psql "db" < migrations/schema_up.sql
+psql "db" < migrations/schema_down.sql
+psql "db" < migrations/seeds.sql

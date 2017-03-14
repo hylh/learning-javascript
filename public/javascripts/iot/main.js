@@ -1,78 +1,31 @@
-var nfo;
-var currentData = [];
-// Example JSON data returned from your database
-let data = {
-    rows: [
-        {
-            firstName: 'Jill',
-            lastName:  'Smith',
-            age:       '22'
-        },
-        {
-            firstName: 'Fred',
-            lastName:  'Blogs',
-            age:       '34'
-        },
-        {
-            firstName: 'Brian',
-            lastName:  'Jones',
-            age:       '42'
-        }
-    ]
-};
-
-let htmlTableRows = ``;
-let htmlTableTitle = "<thead><tr><th>Name</th><th>Last</th><th>Age</th></tr></thead>";
-
-// Iterate of the rows in the data, use an ES6 "arrow function" to operate on each one
-data.rows.forEach((row) => {
-    // Use ES6 string template to create HTML table rows
-    htmlTableRows += `<tr>
-        <td>${row.firstName}</td>
-        <td>${row.lastName}</td>
-        <td>${row.age}</td>
-    </tr>`;
-});
-
-// HTML for a table
-var htmlTable = `<table class="table table-hover" style="width:100%">${htmlTableTitle}${htmlTableRows}</table>`;
-
-console.log(htmlTable);
-
-$(document).ready(function(){
-    var $t = $('#tableContainer');
-    $t.append(htmlTable);
-    
-    $('#get').click(function(event){
-        $.get('/model', function(data){
-            nfo = data;
-        });
-    });
-    $('#view').click(function(event){
-        for(i=0; i < nfo.length; i++){
-            let day = nfo[i].day;
-            let temp = nfo[i].temperature;
-            let tuple = {x: day, y: temp};
-            currentData.push(tuple);
-        }
-        console.log(currentData[0]);
-    });
-});
-
-
-
-
 var chart = new CanvasJS.Chart("chartContainer");
+const monthStringArray = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
-window.onload = function () {
-    //this gets the initial data from the router
-    //let dates = local_data;
-    //console.log(local_data);
+function createHTMLTable(data){
+    let htmlTableRows = ``;
+    let htmlTableTitle = "<thead><tr><th>Month</th><th>Day</th><th>Temperature</th></tr></thead>";
+    let monthString;
+    // Iterate of the rows in the data, use an ES6 "arrow function" to operate on each one
+    data.forEach((row) => {
+        // Use ES6 string template to create HTML table rows
+        //need -1 because the month_id starts at 1
+        monthString = monthStringArray[row.month_id - 1];
+        htmlTableRows += `<tr>
+            <td>${monthString}</td>
+            <td>${row.day}</td>
+            <td>${row.temperature}</td>
+        </tr>`;
+    });
+
+    // HTML for a table
+    let htmlTable = `<table class="table table-hover" style="width:100%">${htmlTableTitle}${htmlTableRows}</table>`;
+    return htmlTable
+}
+
+function createChart(initialData){
     chart.options.title = {text: "Temperatures"};
-
     var dataStyle = {
         type: "line",
-        name: "January",
         showInLegend: true
     };
 /*
@@ -93,20 +46,72 @@ window.onload = function () {
     // Date is (year, month, date, hours, minutes)
     // x: new Data(2017, 03, 01, 15, 10)
     
-    dataStyle.dataPoints = [
-        { x: 1, y: 10},
-        { x: 2, y: 5},
-        { x: 3, y: 12},
-        { x: 4, y: 25},
-        { x: 5, y: 22}
-    ];
-
-    chart.render();
+    dataStyle.dataPoints = initialData;
 }
+
+function getMonth(month){
+    const searchString = '/model/month/' + month;
+    return $.get(searchString).then(function(data){
+        return data;
+    });
+}
+
+function createMonthArray(month){
+    let def = new $.Deferred();
+    let monthArray = [];
+    let day, temp, tuple;
+    for(i=0; i < month.length; i++){
+        day = month[i].day;
+        temp = month[i].temperature;
+        tuple = {x: day, y: temp};
+        monthArray.push(tuple);
+    }
+    def.resolve(monthArray);
+    return def.promise();
+}
+
+$(document).ready(function(){
+    //Current month from 0-11
+    let d = new Date();
+    let currentMonth = d.getMonth();
+    //Because currentMonth is from 0-11, we need to send in +1
+    //for the month for the database
+    getMonth(currentMonth + 1).then(function(month){
+        //Create and view table
+        let initialTable = createHTMLTable(month);
+        $('#tableContainer').append(initialTable);
+        //Create and view chart
+        createMonthArray(month).then(function(monthArray){
+        createChart(monthArray);
+        chart.options.data[0].name = monthStringArray[currentMonth];
+        chart.render();
+      });  
+    });
+});
+
+$('#get').click(function(event){
+    console.log("What");
+});
+$('#view').click(function(event){
+    console.log("old button");
+});
+
 
 var Update = function () {
     //Use jquery .replaceWith()
+    
+    //This will need to define a month
+    //months are from 0-11
+    let newMonth = 3
     chart.options.title.fontColor = "red";
-    chart.options.data[0].dataPoints = currentData;
-    chart.render();
+    getMonth(newMonth + 1).then(function(month){
+        let newTable = createHTMLTable(month);
+        $('#tableContainer').replaceWith(newTable);
+        createMonthArray(month).then(function(monthArray){
+            chart.options.data[0].dataPoints = monthArray;
+            console.log(newMonth);
+            chart.options.data[0].name = monthStringArray[newMonth];
+            chart.render();
+        });
+    });
 }

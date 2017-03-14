@@ -13,6 +13,29 @@ append body
         button#get.btn.btn-lg.btn-primary(type='button') Load
         button#view.btn.btn-lg.btn-primary(type='button') View
         button.btn.btn-lg.btn-primary(type='button', onclick="Update()") Update
+
+    .row
+      h1 Dropdown
+      .dropdown
+        a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+          | Dropdown 
+          span.caret
+        ul.dropdown-menu(role='menu', aria-labelledby='dropdownMenu')
+          li(role='presentation')
+            a(role='menuitem', tabindex='-1', href='#') Action
+          li
+            a(href='#') Another action
+          li
+            a(href='#') Something else here
+          li.divider
+          li.dropdown-header Nav header
+          li
+            a(href='#') Separated link
+          li
+            a(href='#') One more separated link
+
+
+
   .row
     .col-md-6
       div(id="chartContainer", style="height: 300px; width: 100%;")
