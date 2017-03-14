@@ -87,6 +87,13 @@ $(document).ready(function(){
         chart.render();
       });  
     });
+
+});
+
+$(document.body).on('click', '.dropdown-menu li a', function (e) {
+    let newMonth = $(this).text()
+    let month = monthStringArray.indexOf(newMonth);
+    update(month);
 });
 
 $('#get').click(function(event){
@@ -97,12 +104,10 @@ $('#view').click(function(event){
 });
 
 
-var Update = function () {
-    //Use jquery .replaceWith()
-    
+function update(newMonth) {
     //This will need to define a month
     //months are from 0-11
-    let newMonth = 3
+    //let newMonth = 3
     chart.options.title.fontColor = "red";
     getMonth(newMonth + 1).then(function(month){
         let newTable = createHTMLTable(month);
