@@ -41,3 +41,6 @@ Run migrations
 psql "db" < migrations/schema_up.sql
 psql "db" < migrations/schema_down.sql
 psql "db" < migrations/seeds.sql
+
+Send to heroku
+heroku pg:push mylocaldb HEROKU_POSTGRESQL_MAGENTA
