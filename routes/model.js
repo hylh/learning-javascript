@@ -82,8 +82,8 @@ exports.addItem = function(req, res) {
                 if(err){
                     return console.error('error adding item', err);
                 };
-                console.log('Printing result');
-                console.log(result);
+                //console.log('Printing result');
+                //console.log(result);
                 res.send(result);
         });
     });

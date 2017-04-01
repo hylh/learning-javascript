@@ -2,6 +2,7 @@ var chart = new CanvasJS.Chart("chartContainer");
 const monthStringArray = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
 function createHTMLTable(data){
+    let def = new $.Deferred();
     let htmlTableRows = ``;
     let htmlTableTitle = "<thead><tr><th>Month</th><th>Day</th><th>Temperature</th></tr></thead>";
     let monthString;
@@ -19,12 +20,14 @@ function createHTMLTable(data){
 
     // HTML for a table
     let htmlTable = `<table class="table table-hover" style="width:100%">${htmlTableTitle}${htmlTableRows}</table>`;
-    return htmlTable
+    def.resolve(htmlTable);
+    return def.promise();
+    //return htmlTable
 }
 
 function createChart(initialData){
     chart.options.title = {text: "Temperatures"};
-    var dataStyle = {
+    let dataStyle = {
         type: "line",
         showInLegend: true
     };
@@ -71,6 +74,20 @@ function createMonthArray(month){
 }
 
 $(document).ready(function(){
+    $('select').selectpicker({
+        style: 'btn-primary',
+    });
+    $('#primaryMonth').selectpicker({
+        title: 'Choose month',
+        selected: 'April'
+    });
+    $('#secondaryMonth').selectpicker({
+        title: 'Add comparison'
+    });
+    $('select').selectpicker('refresh');
+    
+    $('#clearSecond').hide();
+    // Hide the clear button
     //Current month from 0-11
     let d = new Date();
     let currentMonth = d.getMonth();
@@ -78,45 +95,67 @@ $(document).ready(function(){
     //for the month for the database
     getMonth(currentMonth + 1).then(function(month){
         //Create and view table
-        let initialTable = createHTMLTable(month);
-        $('#tableContainer').append(initialTable);
+        createHTMLTable(month).then(function(table){
+            $('#tableContainer').append(table);
+        });
         //Create and view chart
         createMonthArray(month).then(function(monthArray){
-        createChart(monthArray);
-        chart.options.data[0].name = monthStringArray[currentMonth];
-        chart.render();
+            createChart(monthArray);
+            chart.options.data[0].name = monthStringArray[currentMonth];
+            chart.render();
       });  
     });
-
 });
 
-$(document.body).on('click', '.dropdown-menu li a', function (e) {
-    let newMonth = $(this).text()
+$('#primaryMonth').on('change' , function(){
+    let newMonth = $("#primaryMonth option:selected").text();
     let month = monthStringArray.indexOf(newMonth);
     update(month);
 });
 
-$('#get').click(function(event){
-    console.log("What");
-});
-$('#view').click(function(event){
-    console.log("old button");
+$('#clearSecond').click(function(event){
+    chart.options.data.pop();
+    chart.render();
+    $('#clearSecond').hide();
+    $('#secondaryMonth').attr('disabled', false);
+    $('#secondaryMonth').selectpicker('refresh');
 });
 
+$('#secondaryMonth').on('change', function(){
+    let dataStyle = {
+        type: "line",
+        showInLegend: true
+    };
+    chart.options.data.push(dataStyle);
+    let chartNumber = 1;
+    let newMonth = $("#secondaryMonth option:selected").text()
+    let month = monthStringArray.indexOf(newMonth);
+     getMonth(month + 1).then(function(monthData){
+        updateChart(monthData, month, chartNumber);
+    });
+    $('#secondaryMonth').attr('disabled', true);
+    $('#secondaryMonth').selectpicker('refresh');
+    $('#clearSecond').show();
+});
 
 function update(newMonth) {
-    //This will need to define a month
-    //months are from 0-11
-    //let newMonth = 3
-    chart.options.title.fontColor = "red";
-    getMonth(newMonth + 1).then(function(month){
-        let newTable = createHTMLTable(month);
-        $('#tableContainer').replaceWith(newTable);
-        createMonthArray(month).then(function(monthArray){
-            chart.options.data[0].dataPoints = monthArray;
-            console.log(newMonth);
-            chart.options.data[0].name = monthStringArray[newMonth];
-            chart.render();
-        });
+    let chartNumber = 0;
+    getMonth(newMonth + 1).then(function(monthData){
+        updateTable(monthData);
+        updateChart(monthData, newMonth, chartNumber);
+    });
+}
+
+function updateTable(monthData) {
+    createHTMLTable(monthData).then(function(table){
+        $('#tableContainer').html(table);
+    });
+}
+
+function updateChart(monthData, monthNumber, chartNumber) {
+    createMonthArray(monthData).then(function(monthArray){
+        chart.options.data[chartNumber].dataPoints = monthArray;
+        chart.options.data[chartNumber].name = monthStringArray[monthNumber];
+        chart.render();
     });
 }

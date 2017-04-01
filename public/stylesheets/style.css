@@ -19,3 +19,7 @@ body {
 .buttonRow {
   text-align: center;
 }
+
+.dropdown {
+    cursor: pointer;
+}
