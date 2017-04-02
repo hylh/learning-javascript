@@ -24,10 +24,10 @@ router.get('/iot', function(req, res, next) {
 });
 
 const options = {
-  host: 'localhost',
-  //host: 'https://enigmatic-tundra-92369.herokuapp.com/'
-  path: '/model',
-  //port: '3000',
+  //host: 'localhost',
+  host: 'https://enigmatic-tundra-92369.herokuapp.com/',
+  path: 'model',
+  port: '80',
   method: 'POST',
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded'
