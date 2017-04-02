@@ -7,10 +7,10 @@ function createHTMLTable(data){
     let htmlTableTitle = "<thead><tr><th>Month</th><th>Day</th><th>Temperature</th></tr></thead>";
     let monthString;
     // Iterate of the rows in the data, use an ES6 "arrow function" to operate on each one
+    monthString = monthStringArray[data[0].month_id - 1];
     data.forEach((row) => {
         // Use ES6 string template to create HTML table rows
         //need -1 because the month_id starts at 1
-        monthString = monthStringArray[row.month_id - 1];
         htmlTableRows += `<tr>
             <td>${monthString}</td>
             <td>${row.day}</td>
@@ -22,7 +22,49 @@ function createHTMLTable(data){
     let htmlTable = `<table class="table table-hover" style="width:100%">${htmlTableTitle}${htmlTableRows}</table>`;
     def.resolve(htmlTable);
     return def.promise();
-    //return htmlTable
+}
+
+function createComparissonHTMLTable(originData, compData){
+    let def = new $.Deferred();
+    let htmlTableRows = ``;
+    let htmlTableTitle = "<thead><tr><th>Month</th><th>Day</th><th>Temperature</th></tr></thead>";
+    // Iterate of the rows in the data, use an ES6 "arrow function" to operate on each one
+    let originMonthString = monthStringArray[originData[0].month_id - 1];
+    let compMonthString = monthStringArray[compData[0].month_id - 1];
+    console.log(originMonthString);
+    console.log(compMonthString);
+    let iteration = 0;
+    let monthRow;
+    let tempRow;
+
+    let lengthOrigin = originData.length;
+    let iterMax = compData.length;
+    if (lengthOrigin < iterMax){
+        iterMax = lengthOrigin;
+    };
+
+    originData.forEach((row) => {
+        // Use ES6 string template to create HTML table rows
+        //need -1 because the month_id starts at 1
+        if(iteration < iterMax){
+            monthRow = originMonthString + " vs " + compMonthString;
+            tempRow = row.temperature + " - " + compData[iteration].temperature;
+        } else {
+            monthRow = originMonthString;
+            tempRow = row.temperature;
+        };
+        htmlTableRows += `<tr>
+            <td>${monthRow}</td>
+            <td>${row.day}</td>
+            <td>${tempRow}</td>
+        </tr>`;
+        iteration++;
+    });
+
+    // HTML for a table
+    let htmlTable = `<table class="table table-hover" style="width:100%">${htmlTableTitle}${htmlTableRows}</table>`;
+    def.resolve(htmlTable);
+    return def.promise();
 }
 
 function createChart(initialData){
@@ -31,24 +73,11 @@ function createChart(initialData){
         type: "line",
         showInLegend: true
     };
-/*
-    var dataStyle2 = {
-        type: "line",
-        name: "February",
-        showInLegend: true
-    }
-*/
-    //chart.axisX.interval = 1;
-    //chart.axisX.intervalType = "day";
 
     chart.options.data = [];
     chart.options.data.push(dataStyle);
-    //chart.options.data.push(dataStyle2);
-
-
     // Date is (year, month, date, hours, minutes)
     // x: new Data(2017, 03, 01, 15, 10)
-    
     dataStyle.dataPoints = initialData;
 }
 
@@ -110,12 +139,17 @@ $(document).ready(function(){
 $('#primaryMonth').on('change' , function(){
     let newMonth = $("#primaryMonth option:selected").text();
     let month = monthStringArray.indexOf(newMonth);
-    update(month);
+    update(month);monthStringArray.indexOf(newMonth);
 });
 
 $('#clearSecond').click(function(event){
     chart.options.data.pop();
     chart.render();
+    let month = $("#primaryMonth option:selected").text();
+    month = monthStringArray.indexOf(month);
+    getMonth(month + 1).then(function(monthData){
+        updateTable(monthData);
+    });
     $('#clearSecond').hide();
     $('#secondaryMonth').attr('disabled', false);
     $('#secondaryMonth').selectpicker('refresh');
@@ -128,10 +162,20 @@ $('#secondaryMonth').on('change', function(){
     };
     chart.options.data.push(dataStyle);
     let chartNumber = 1;
-    let newMonth = $("#secondaryMonth option:selected").text()
+    let newMonth = $("#secondaryMonth option:selected").text();
     let month = monthStringArray.indexOf(newMonth);
-     getMonth(month + 1).then(function(monthData){
-        updateChart(monthData, month, chartNumber);
+    getMonth(month + 1).then(function(compMonthData){
+        newMonth = $("#primaryMonth option:selected").text();
+        if(newMonth == "Choose month"){
+            let d = new Date();
+            newMonth = d.getMonth();
+        } else {
+            newMonth = monthStringArray.indexOf(newMonth);
+        };
+        getMonth(newMonth + 1).then(function(originMonthData){
+            createComparissonTable(originMonthData, compMonthData);
+        })
+        updateChart(compMonthData, month, chartNumber);
     });
     $('#secondaryMonth').attr('disabled', true);
     $('#secondaryMonth').selectpicker('refresh');
@@ -143,6 +187,12 @@ function update(newMonth) {
     getMonth(newMonth + 1).then(function(monthData){
         updateTable(monthData);
         updateChart(monthData, newMonth, chartNumber);
+    });
+}
+
+function createComparissonTable(originData, compData) {
+    createComparissonHTMLTable(originData, compData).then(function(table){
+        $('#tableContainer').html(table);
     });
 }
 
