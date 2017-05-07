@@ -38,9 +38,13 @@ Quit interactive shell
 \q
 
 Run migrations
+-db name is "hero"
 psql "db" < migrations/schema_up.sql
 psql "db" < migrations/schema_down.sql
 psql "db" < migrations/seeds.sql
 
 Send to heroku
-heroku pg:push mylocaldb HEROKU_POSTGRESQL_MAGENTA
+-heroku db name is "postgresql-animate-51765"
+-need to reset before running db push
+heroku pg:reset
+heroku pg:push mylocaldb heroku_database

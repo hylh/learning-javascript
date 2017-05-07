@@ -36,8 +36,6 @@ function createComparissonHTMLTable(originData, compData){
     // Iterate of the rows in the data, use an ES6 "arrow function" to operate on each one
     let originMonthString = monthStringArray[originData[0].month_id - 1];
     let compMonthString = monthStringArray[compData[0].month_id - 1];
-    console.log(originMonthString);
-    console.log(compMonthString);
     let iteration = 0;
     let monthRow;
     let tempRow;
@@ -111,8 +109,7 @@ $(document).ready(function(){
 });
 
 $('#primaryMonth').on('change' , function(){
-    let newMonth = $("#primaryMonth option:selected").text();    month = monthStringArray.indexOf(month);
-
+    let newMonth = $("#primaryMonth option:selected").text();    
     let month = monthStringArray.indexOf(newMonth);
     update(month);
 });
@@ -155,8 +152,8 @@ $('#secondaryMonth').on('change', function(){
 
 function update(newMonth) {
     getMonth(newMonth + 1).then(function(monthData){
-        updateTable(monthData);
         updateChart(monthData, newMonth);
+        updateTable(monthData);
     });
 }
 
@@ -212,10 +209,7 @@ function updateChart(month, monthNumber) {
 
 function initialDrawChart() {
     // Define the chart to be drawn.
-    //var data = new google.visualization.DataTable();
     let data = new google.visualization.DataTable();
-    //data.addColumn('number', 'Day');
-    //data.addColumn('number', 'Temperature');
     let options = {
         'legend':'bottom',
         hAxis: {
@@ -231,7 +225,6 @@ function initialDrawChart() {
         data.addColumn('number', 'February');
         let rows = createChartRows(month);
         data.addRows(rows);
-        // Instantiate and draw the chart.
         chart = new google.visualization.LineChart(document.getElementById('chartContainer'));
         chart.draw(data, options);
     });
