@@ -23,3 +23,8 @@ body {
 .dropdown {
     cursor: pointer;
 }
+
+.gauge {
+  display: flex;
+  justify-content: center;
+}

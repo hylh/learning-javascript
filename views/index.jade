@@ -6,6 +6,17 @@ append body
       h1= title
       p.lead Welcome to #{title}
   
-  
+  .gauge
+    div(id="gauge", style="height: 150px; width: 300px;")
+  .buttonRow
+    button.btn.btn-lg.btn-primary(
+        type='button'
+        onclick="changeTemp(1)"
+      ) Go Fast
+    button.btn.btn-lg.btn-primary(
+        type='button'
+        onclick="changeTemp(-1)"
+      ) Slow down
 
+  script(src="https://www.gstatic.com/charts/loader.js")
   script(src="javascripts/home/main.js")
