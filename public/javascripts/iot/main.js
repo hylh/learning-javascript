@@ -1,4 +1,9 @@
-var chart = new CanvasJS.Chart("chartContainer");
+google.charts.load('current', {packages: ['corechart']});
+google.charts.setOnLoadCallback(initialDrawChart);
+
+//Easily have access to the chart object. 
+var chart;
+
 const monthStringArray = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
 function createHTMLTable(data){
@@ -67,20 +72,6 @@ function createComparissonHTMLTable(originData, compData){
     return def.promise();
 }
 
-function createChart(initialData){
-    chart.options.title = {text: "Temperatures"};
-    let dataStyle = {
-        type: "line",
-        showInLegend: true
-    };
-
-    chart.options.data = [];
-    chart.options.data.push(dataStyle);
-    // Date is (year, month, date, hours, minutes)
-    // x: new Data(2017, 03, 01, 15, 10)
-    dataStyle.dataPoints = initialData;
-}
-
 function getMonth(month){
     const searchString = '/model/month/' + month;
     return $.get(searchString).then(function(data){
@@ -88,27 +79,12 @@ function getMonth(month){
     });
 }
 
-function createMonthArray(month){
-    let def = new $.Deferred();
-    let monthArray = [];
-    let day, temp, tuple;
-    for(i=0; i < month.length; i++){
-        day = month[i].day;
-        temp = month[i].temperature;
-        tuple = {x: day, y: temp};
-        monthArray.push(tuple);
-    }
-    def.resolve(monthArray);
-    return def.promise();
-}
-
 $(document).ready(function(){
     $('select').selectpicker({
         style: 'btn-primary',
     });
     $('#primaryMonth').selectpicker({
-        title: 'Choose month',
-        selected: 'April'
+        title: 'Choose month'
     });
     $('#secondaryMonth').selectpicker({
         title: 'Add comparison'
@@ -118,37 +94,39 @@ $(document).ready(function(){
     $('#clearSecond').hide();
     // Hide the clear button
     //Current month from 0-11
-    let d = new Date();
-    let currentMonth = d.getMonth();
     //Because currentMonth is from 0-11, we need to send in +1
     //for the month for the database
-    getMonth(currentMonth + 1).then(function(month){
+    let feb = 2;
+    getMonth(feb).then(function(month){
+        if (month.length == 0) {
+            //Because there is no data for the current month
+            //This is a problem, TODO
+            return;
+        }
         //Create and view table
         createHTMLTable(month).then(function(table){
             $('#tableContainer').append(table);
         });
-        //Create and view chart
-        createMonthArray(month).then(function(monthArray){
-            createChart(monthArray);
-            chart.options.data[0].name = monthStringArray[currentMonth];
-            chart.render();
-      });  
     });
 });
 
 $('#primaryMonth').on('change' , function(){
-    let newMonth = $("#primaryMonth option:selected").text();
+    let newMonth = $("#primaryMonth option:selected").text();    month = monthStringArray.indexOf(month);
+
     let month = monthStringArray.indexOf(newMonth);
-    update(month);monthStringArray.indexOf(newMonth);
+    update(month);
 });
 
 $('#clearSecond').click(function(event){
-    chart.options.data.pop();
-    chart.render();
     let month = $("#primaryMonth option:selected").text();
-    month = monthStringArray.indexOf(month);
+    if(month == "Choose month"){
+        month = 1; //set this to default (february)
+    } else {
+        month = monthStringArray.indexOf(month);
+    };
     getMonth(month + 1).then(function(monthData){
         updateTable(monthData);
+        updateChart(monthData, month);
     });
     $('#clearSecond').hide();
     $('#secondaryMonth').attr('disabled', false);
@@ -156,26 +134,19 @@ $('#clearSecond').click(function(event){
 });
 
 $('#secondaryMonth').on('change', function(){
-    let dataStyle = {
-        type: "line",
-        showInLegend: true
-    };
-    chart.options.data.push(dataStyle);
-    let chartNumber = 1;
     let newMonth = $("#secondaryMonth option:selected").text();
     let month = monthStringArray.indexOf(newMonth);
     getMonth(month + 1).then(function(compMonthData){
         newMonth = $("#primaryMonth option:selected").text();
         if(newMonth == "Choose month"){
-            let d = new Date();
-            newMonth = d.getMonth();
+            newMonth = 1; //set this to default (february)
         } else {
             newMonth = monthStringArray.indexOf(newMonth);
         };
         getMonth(newMonth + 1).then(function(originMonthData){
             createComparissonTable(originMonthData, compMonthData);
+            createDualChart(originMonthData, compMonthData, month, newMonth)
         })
-        updateChart(compMonthData, month, chartNumber);
     });
     $('#secondaryMonth').attr('disabled', true);
     $('#secondaryMonth').selectpicker('refresh');
@@ -183,10 +154,9 @@ $('#secondaryMonth').on('change', function(){
 });
 
 function update(newMonth) {
-    let chartNumber = 0;
     getMonth(newMonth + 1).then(function(monthData){
         updateTable(monthData);
-        updateChart(monthData, newMonth, chartNumber);
+        updateChart(monthData, newMonth);
     });
 }
 
@@ -202,10 +172,87 @@ function updateTable(monthData) {
     });
 }
 
-function updateChart(monthData, monthNumber, chartNumber) {
-    createMonthArray(monthData).then(function(monthArray){
-        chart.options.data[chartNumber].dataPoints = monthArray;
-        chart.options.data[chartNumber].name = monthStringArray[monthNumber];
-        chart.render();
+function createDualChart(month1, month2, monthNumber1, monthNumber2) {
+    let data = new google.visualization.DataTable();
+    let options = {
+        'legend':'bottom',
+        hAxis: {
+            title: "Days"
+        },
+        vAxis: {
+            title: "Temperature"
+        }
+    };
+    data.addColumn('number', 'Day');
+    data.addColumn('number', monthStringArray[monthNumber1]);
+    data.addColumn('number', monthStringArray[monthNumber2]);
+    let rows = createDualChartRows(month1, month2);
+    data.addRows(rows);
+    chart.draw(data, options);
+}
+
+function updateChart(month, monthNumber) {
+    let data = new google.visualization.DataTable();
+    let options = {
+        'legend':'bottom',
+        hAxis: {
+            title: "Days"
+        },
+        vAxis: {
+            title: "Temperature"
+        }
+    };
+
+    data.addColumn('number', 'Day');
+    data.addColumn('number', monthStringArray[monthNumber]);
+    let rows = createChartRows(month);
+    data.addRows(rows);
+    chart.draw(data, options);
+}
+
+function initialDrawChart() {
+    // Define the chart to be drawn.
+    //var data = new google.visualization.DataTable();
+    let data = new google.visualization.DataTable();
+    //data.addColumn('number', 'Day');
+    //data.addColumn('number', 'Temperature');
+    let options = {
+        'legend':'bottom',
+        hAxis: {
+            title: "Days"
+        },
+        vAxis: {
+            title: "Temperature"
+        }
+    };
+    let feb = 2;
+    getMonth(feb).then(function(month){
+        data.addColumn('number', 'Day');
+        data.addColumn('number', 'February');
+        let rows = createChartRows(month);
+        data.addRows(rows);
+        // Instantiate and draw the chart.
+        chart = new google.visualization.LineChart(document.getElementById('chartContainer'));
+        chart.draw(data, options);
     });
+}
+
+function createChartRows(month) {
+    let array = [];
+    for(i=0; i < month.length; i++){
+        array[i] = [month[i].day, month[i].temperature];
+    }
+    return array;
+}
+
+function createDualChartRows(month1, month2) {
+    let array = [];
+    for(i=0; i < month1.length; i++){
+        if (month2[i] != null) {
+            array[i] = [month1[i].day, month1[i].temperature, month2[i].temperature];
+        } else {
+            array[i] = [month1[i].day, month1[i].temperature];
+        }
+    }
+    return array;
 }
