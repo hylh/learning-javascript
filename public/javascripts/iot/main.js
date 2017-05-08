@@ -143,7 +143,7 @@ function initialDrawChart() {
 function createChartRows(month) {
     let array = [];
     for(i=0; i < month.length; i++){
-        array[i] = [month[i].day, month[i].temperature];
+        array[i] = [month[i].day, Number(month[i].temperature)];
     }
     return array;
 }
@@ -152,9 +152,9 @@ function createDualChartRows(month1, month2) {
     let array = [];
     for(i=0; i < month1.length; i++){
         if (month2[i] != null) {
-            array[i] = [month1[i].day, month1[i].temperature, month2[i].temperature];
+            array[i] = [month1[i].day, Number(month1[i].temperature), Number(month2[i].temperature)];
         } else {
-            array[i] = [month1[i].day, month1[i].temperature, null];
+            array[i] = [month1[i].day, Number(month1[i].temperature), null];
         }
     }
     return array;

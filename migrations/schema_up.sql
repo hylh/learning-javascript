@@ -6,7 +6,7 @@ CREATE TABLE days (
     id serial PRIMARY KEY,
     month_id serial REFERENCES months(id) on delete cascade,
     day integer,
-    temperature integer,
-    humidity integer,
-    pressure integer
+    temperature decimal,
+    humidity decimal,
+    pressure decimal
 );

@@ -51,7 +51,7 @@ function updateChart(month) {
 function createChartRows(month) {
     let array = [];
     for(i=0; i < month.length; i++){
-        array[i] = [month[i].day, month[i].temperature, month[i].humidity, month[i].pressure];
+        array[i] = [month[i].day, Number(month[i].temperature), Number(month[i].humidity), Number(month[i].pressure)];
     }
     return array;
 }

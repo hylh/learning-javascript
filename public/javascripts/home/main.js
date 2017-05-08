@@ -15,9 +15,9 @@ function drawGauge() {
         h = month[latestDate].humidity;
         p = month[latestDate].pressure;
 
-        temp(t);
-        humi(h);
-        pres(p);
+        temp(Number(t));
+        humi(Number(h));
+        pres(Number(p));
     });
 }
 
@@ -45,7 +45,7 @@ function humi(value) {
 
 function pres(value) {
     let options = {min: 500, max: 1100, yellowFrom: 1050, yellowTo: 1090,
-    redFrom: 1090, redTo: 1100, minorTicks: 100};
+    redFrom: 1090, redTo: 1100, minorTicks: 1};
     let data = new google.visualization.DataTable();
     data.addColumn("number", 'Pressure');
     data.addRows(1);
