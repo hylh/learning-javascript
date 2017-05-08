@@ -47,8 +47,11 @@ callback = function(response) {
   });
 }
 
-function create_post_string(month, day, temp){
-  return "month=" + month + "&day=" + day + "&temperature=" + temp;
+function create_post_string(temperature, humidity, pressure){
+  let date = new Date();
+  let month = date.getMonth() + 1;
+  let day = date.getDate();
+  return "month=" + month + "&day=" + day + "&temperature=" + temperature + "&humidity=" + humidity + "&pressure=" + pressure;
 }
 
 /* POST measurements. */
@@ -59,10 +62,11 @@ router.post('/measure', function(req, res){
   console.log("message: ", message);
 
   let message_array = message.split(",");
-  let month = message_array[0];
-  let day = message_array[1];
-  let temp = message_array[2]; 
-  let post_string = create_post_string(month, day, temp);
+  let temperature = message_array[0];
+  let humidity = message_array[1];
+  let pressure = message_array[2]; 
+  let post_string = create_post_string(temperature, humidity, pressure);
+  console.log("Post string: ", post_string);
   let post_request = http.request(options, callback);
   post_request.write(post_string);
   post_request.end();

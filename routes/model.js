@@ -71,20 +71,23 @@ exports.addItem = function(req, res) {
         if (err) {
             return console.error('error fetching client from pool', err);
         };
+        console.log("Printing the body");
         console.log(req.body);
-        var month = req.body.month;
-        var day = req.body.day;
-        var temperature = req.body.temperature;
-        console.log('Adding month: ' + month + " Day: " + day + " Temp: " + temperature);
+        let month = req.body.month;
+        let day = req.body.day;
+        let temperature = req.body.temperature;
+        let humidity = req.body.humidity;
+        let pressure = req.body.pressure;
+        console.log('Adding month: ' + month + " Day: " + day + " Temp: " + temperature + " Humidity: " + humidity + " Pressure: " + pressure);
         //Create something like "pg insert ?"
         client
-            .query('INSERT INTO days(month_id, day, temperature) VALUES($1, $2, $3) returning id', [month, day, temperature], function(err, result){
+            .query('INSERT INTO days(month_id, day, temperature, humidity, pressure) VALUES($1, $2, $3, $4, $5) returning id', [month, day, temperature, humidity, pressure], function(err, result){
                 done();
                 if(err){
                     return console.error('error adding item', err);
                 };
-                //console.log('Printing result');
-                //console.log(result);
+                console.log('Printing result');
+                console.log(result);
                 res.send(result);
         });
     });
