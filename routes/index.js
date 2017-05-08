@@ -6,7 +6,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', {title: 'IoT'});
+  res.render('index', {title: 'SASS'});
 });
 
 /* GET map page. */
@@ -21,6 +21,11 @@ router.get('/iot', function(req, res, next) {
   const array = { x: 2, y: 2};
 
   res.render('iot', {foo: array});
+});
+
+router.get("/stats", function(req, res, next) {
+  console.log("Got a GET request for /stats");
+  res.render('stats');
 });
 
 const options = {
@@ -51,7 +56,7 @@ router.post('/measure', function(req, res){
   console.log("Got a POST request for /measure");
   let message = req.body.string_value;
   /* string_value is the message */
-  //console.log("message: ", message);
+  console.log("message: ", message);
 
   let message_array = message.split(",");
   let month = message_array[0];

@@ -3,20 +3,14 @@ extends layout
 append body
   .container
     .jumbotron
-      h1= title
-      p.lead Welcome to #{title}
-  
-  .gauge
-    div(id="gauge", style="height: 150px; width: 300px;")
-  .buttonRow
-    button.btn.btn-lg.btn-primary(
-        type='button'
-        onclick="changeTemp(1)"
-      ) Go Fast
-    button.btn.btn-lg.btn-primary(
-        type='button'
-        onclick="changeTemp(-1)"
-      ) Slow down
+      h1 #{title} - Simple Arctic Sensor System
+
+  .centered
+    h2 The latest measurements
+  .centered
+    div(id="temperature")
+    div(id="pressure")
+    div(id="humidity")
 
   script(src="https://www.gstatic.com/charts/loader.js")
   script(src="javascripts/home/main.js")

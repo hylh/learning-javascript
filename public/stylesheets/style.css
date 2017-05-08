@@ -24,7 +24,7 @@ body {
     cursor: pointer;
 }
 
-.gauge {
+.centered {
   display: flex;
   justify-content: center;
 }
