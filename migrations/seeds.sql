@@ -16,7 +16,6 @@ VALUES
 INSERT INTO
 days
 VALUES
-(default, (SELECT id FROM months WHERE id=1), 1, 1.5, 72.73, 640.39),
 (default, (SELECT id FROM months WHERE id=2), 1, 28.5, 72.53, 640.40),
 (default, (SELECT id FROM months WHERE id=2), 2, 23.5, 72.53, 640.40),
 (default, (SELECT id FROM months WHERE id=2), 3, 22.5, 72.53, 641.40),

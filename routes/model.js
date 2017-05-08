@@ -47,6 +47,22 @@ exports.findMonthById = function(req, res) {
     });
 };
 
+exports.listMonths = function(req, res) {
+    pg.connect(connString, function(err, client, done) {
+        if (err){
+            return console.error('error fetching client from pool', err);
+        };
+        client.query('SELECT DISTINCT month_id FROM days ORDER BY month_id', function(err, result){
+            done();
+            if(err){
+                return console.error('error running query', err);
+            };
+            //console.log(result.rows);
+            res.send(result.rows);
+        });
+    })
+};
+
 exports.findAll = function(req, res) {
     pg.connect(connString, function(err, client, done) {
         if (err) {

@@ -6,25 +6,7 @@ var chart, table;
 
 const monthStringArray = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
-function getMonth(month){
-    const searchString = '/model/month/' + month;
-    return $.get(searchString).then(function(data){
-        return data;
-    });
-}
-
 $(document).ready(function(){
-    $('select').selectpicker({
-        style: 'btn-primary',
-    });
-    $('#primaryMonth').selectpicker({
-        title: 'Choose month'
-    });
-    $('#secondaryMonth').selectpicker({
-        title: 'Add comparison'
-    });
-    $('select').selectpicker('refresh');
-    
     $('#clearSecond').hide();
 });
 
@@ -44,10 +26,8 @@ $('#clearSecond').click(function(event){
     updateChart(month);
 
     $('#clearSecond').hide();
-    $('#primaryMonth').attr('disabled', false);
-    $('#primaryMonth').selectpicker('refresh');
-    $('#secondaryMonth').attr('disabled', false);
-    $('#secondaryMonth').selectpicker('refresh');
+    $('#primaryMonthSelect').prop('disabled', false);
+    $('#secondaryMonthSelect').prop('disabled', false);
 });
 
 $('#secondaryMonth').on('change', function(){
@@ -66,10 +46,8 @@ $('#secondaryMonth').on('change', function(){
             createDualChart(originMonthData, compMonthData, newMonth, month);
         })
     });
-    $('#primaryMonth').attr('disabled', true);
-    $('#primaryMonth').selectpicker('refresh');
-    $('#secondaryMonth').attr('disabled', true);
-    $('#secondaryMonth').selectpicker('refresh');
+    $('#primaryMonthSelect').prop('disabled', 'disabled');
+    $('#secondaryMonthSelect').prop('disabled', 'disabled');
     $('#clearSecond').show();
 });
 
@@ -137,6 +115,23 @@ function initialDrawChart() {
         chart = new google.visualization.LineChart(document.getElementById('chartContainer'));
         table.draw(data, null);
         chart.draw(data, chartOptions);
+        createSelectButton("primaryMonth");
+        createSelectButton("secondaryMonth");
+    });
+}
+
+function createSelectButton(id) {
+    let div = document.getElementById(id);
+    let select = document.createElement("select");
+    select.id = id + "Select";
+    div.appendChild(select);
+    getListOfMonths().then(function(monthList) {
+        for(i=0; i < monthList.length; i++) {
+            let option = document.createElement("option");
+            option.value = monthStringArray[monthList[i].month_id - 1];
+            option.text = monthStringArray[monthList[i].month_id - 1];
+            select.appendChild(option);
+        }
     });
 }
 
@@ -158,4 +153,18 @@ function createDualChartRows(month1, month2) {
         }
     }
     return array;
+}
+
+function getMonth(month){
+    const searchString = '/model/month/' + month;
+    return $.get(searchString).then(function(data){
+        return data;
+    });
+}
+
+function getListOfMonths() {
+    const searchString = '/model/month/';
+    return $.get(searchString).then(function(data){
+        return data;
+    });
 }

@@ -29,11 +29,11 @@ router.get("/stats", function(req, res, next) {
 });
 
 const options = {
-  //host: 'localhost',
-  host: 'tundra-iot.herokuapp.com',
+  host: 'localhost',
+  //host: 'tundra-iot.herokuapp.com',
   path: '/model',
-  port: '80',
-  //port: '3000',
+  //port: '80',
+  port: '3000',
   method: 'POST',
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded'
@@ -84,6 +84,7 @@ router.post('/measure', function(req, res){
 /* DATABASE FUNCTIONS */
 router.get('/model', model.findAll);
 router.get('/model/day/:id', model.findById);
+router.get('/model/month', model.listMonths);
 router.get('/model/month/:id', model.findMonthById);
 router.post('/model', model.addItem);
 

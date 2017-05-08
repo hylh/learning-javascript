@@ -17,23 +17,31 @@ function initialDrawTable() {
         data.addRows(rows);
         table = new google.visualization.Table(document.getElementById('table'));
         table.draw(data, null);
+        createSelectButton();
     });
 }
 
-$(document).ready(function(){
-    $('select').selectpicker({
-        style: 'btn-primary',
-    });
-    $('#primaryMonth').selectpicker({
-        title: 'Choose month'
-    });
-});
-
-$('#primaryMonth').on('change' , function(){
-    let newMonth = $("#primaryMonth option:selected").text();    
+$('#mySelectDiv').on('change' , function(){
+    let newMonth = $("#mySelectDiv option:selected").text();    
     let month = monthStringArray.indexOf(newMonth);
     updateChart(month);
 });
+
+
+function createSelectButton() {
+    let div = document.getElementById("mySelectDiv");
+    let select = document.createElement("select");
+    select.id = "mySelect";
+    div.appendChild(select);
+    getListOfMonths().then(function(monthList) {
+        for(i=0; i < monthList.length; i++) {
+            let option = document.createElement("option");
+            option.value = monthStringArray[monthList[i].month_id - 1];
+            option.text = monthStringArray[monthList[i].month_id - 1];
+            select.appendChild(option);
+        }
+    });
+}
 
 function updateChart(month) {
     let data = new google.visualization.DataTable();
@@ -58,6 +66,13 @@ function createChartRows(month) {
 
 function getMonth(month){
     const searchString = '/model/month/' + month;
+    return $.get(searchString).then(function(data){
+        return data;
+    });
+}
+
+function getListOfMonths() {
+    const searchString = '/model/month/';
     return $.get(searchString).then(function(data){
         return data;
     });
