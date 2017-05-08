@@ -61,6 +61,11 @@ router.post('/measure', function(req, res){
   /* string_value is the message */
   console.log("message: ", message);
 
+  if (message.indexOf("{") != -1) {
+    let length = message.length;
+    message = message.slice(1, length - 1);
+    console.log(message);
+  }
   let message_array = message.split(",");
   let temperature = message_array[0];
   let humidity = message_array[1];
