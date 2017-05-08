@@ -44,8 +44,8 @@ function humi(value) {
 }
 
 function pres(value) {
-    let options = {min: 0, max: 1000, yellowFrom: 800, yellowTo: 900,
-    redFrom: 900, redTo: 1000, minorTicks: 1};
+    let options = {min: 500, max: 1100, yellowFrom: 1050, yellowTo: 1090,
+    redFrom: 1090, redTo: 1100, minorTicks: 100};
     let data = new google.visualization.DataTable();
     data.addColumn("number", 'Pressure');
     data.addRows(1);
