@@ -108,3 +108,47 @@ exports.addItem = function(req, res) {
         });
     });
 }
+
+exports.getLocation = function(req, res) {
+    pg.connect(connString, function(err, client, done) {
+        if (err) {
+            return console.error('error fetching client from pool', err);
+        };
+        client
+            .query('SELECT * FROM location', function(err, result){
+                done();
+                if(err){
+                    return console.error('error running query', err);
+                };
+                res.send(result.rows);
+        });
+    });
+}
+
+exports.addLocation = function(req, res) {
+    pg.connect(connString, function(err, client, done) {
+        if (err) {
+            return console.error('error fetching client from pool', err);
+        };
+        console.log("Trying to delete");
+        client.query('DELETE FROM location', function(err, result){
+            if(err){
+                //only release client if there is an error
+                done();
+                return console.error('error deleting rows', err);
+            };
+        });
+        let latitude = req.body.latitude;
+        let longitude = req.body.longitude;
+        console.log('Adding latitude: ' + latitude + ' longitude: ' + longitude);
+        client
+            .query('INSERT INTO location(latitude, longitude) VALUES($1, $2) returning id', [latitude, longitude], function(err, result){
+                done();
+                if(err){
+                    return console.error('error running query', err);
+                };
+                console.log('Added location');
+                res.send(result.rows);
+        });
+    });
+}

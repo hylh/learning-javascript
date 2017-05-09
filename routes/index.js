@@ -82,10 +82,15 @@ router.post('/measure', function(req, res){
 });
 
 /* DATABASE FUNCTIONS */
+
+/* Measurements functions */
 router.get('/model', model.findAll);
 router.get('/model/day/:id', model.findById);
 router.get('/model/month', model.listMonths);
 router.get('/model/month/:id', model.findMonthById);
 router.post('/model', model.addItem);
+/* Location functions */
+router.get('/model/location', model.getLocation);
+router.post('/model/location', model.addLocation);
 
 module.exports = router;

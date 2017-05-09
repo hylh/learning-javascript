@@ -31,19 +31,18 @@ $('#clearSecond').click(function(event){
 });
 
 $('#secondaryMonth').on('change', function(){
-    //TODO: REFACTOR
-    let newMonth = $("#secondaryMonth option:selected").text();
-    let month = monthStringArray.indexOf(newMonth);
-    getMonth(month + 1).then(function(compMonthData){
-        newMonth = $("#primaryMonth option:selected").text();
-        if(newMonth == "Choose month"){
-            newMonth = 1; //set this to default (february)
+    let secondary = $("#secondaryMonth option:selected").text();
+    secondary = monthStringArray.indexOf(secondary);
+    getMonth(secondary + 1).then(function(secondaryData){
+        let primary = $("#primaryMonth option:selected").text();
+        if(primary == "Choose month"){
+            primary = 1; //set this to default (february)
         } else {
-            newMonth = monthStringArray.indexOf(newMonth);
+            primary = monthStringArray.indexOf(primary);
         };
-        getMonth(newMonth + 1).then(function(originMonthData){
+        getMonth(primary + 1).then(function(primaryData){
             //createComparissonTable(originMonthData, compMonthData);
-            createDualChart(originMonthData, compMonthData, newMonth, month);
+            createDualChart(primaryData, secondaryData, primary, secondary);
         })
     });
     $('#primaryMonthSelect').prop('disabled', 'disabled');

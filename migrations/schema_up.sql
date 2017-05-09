@@ -4,9 +4,15 @@ CREATE TABLE months (
 );
 CREATE TABLE days (
     id serial PRIMARY KEY,
-    month_id serial REFERENCES months(id) on delete cascade,
+    month_id integer REFERENCES months(id) on delete cascade,
     day integer,
     temperature decimal,
     humidity decimal,
     pressure decimal
+);
+
+CREATE TABLE location (
+    id serial PRIMARY KEY,
+    latitude decimal,
+    longitude decimal
 );

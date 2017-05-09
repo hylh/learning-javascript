@@ -1,4 +1,9 @@
 INSERT INTO
+location
+VALUES
+(default, 69.649208, 18.955324);
+
+INSERT INTO
 months
 VALUES
 (default, 'januar'),
